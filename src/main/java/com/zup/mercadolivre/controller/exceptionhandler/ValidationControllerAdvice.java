@@ -18,4 +18,8 @@ public class ValidationControllerAdvice {
         validationError.buildError(exception);
         return validationError;
     }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public void handlerValidationError(IllegalArgumentException exception){ }
 }

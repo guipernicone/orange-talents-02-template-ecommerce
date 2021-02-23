@@ -1,10 +1,11 @@
 package com.zup.mercadolivre.entity.user;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -31,9 +32,13 @@ public class User {
     public User() {}
 
     public User(String login, String password) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+        Assert.hasLength(login, "The login cannot be empty");
+        Assert.hasLength(password, "The password cannot be empty");
+        Assert.isTrue(password.length() >= 6, "The password must have more than 6 characters");
+
         this.login = login;
-        this.password = encoder.encode(password);
+        this.password = new BCryptPasswordEncoder().encode(password);
         this.registrationTime = LocalDateTime.now();
     }
 
