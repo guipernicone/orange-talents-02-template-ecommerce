@@ -1,5 +1,7 @@
 package com.zup.mercadolivre.validation;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -11,8 +13,10 @@ public class UniqueValueValidator implements ConstraintValidator<UniqueValue, Ob
 
     private String uniqueField;
     private Class<?> targetClass;
+
     @PersistenceContext
     private EntityManager entityManager;
+
 
     @Override
     public void initialize(UniqueValue params) {

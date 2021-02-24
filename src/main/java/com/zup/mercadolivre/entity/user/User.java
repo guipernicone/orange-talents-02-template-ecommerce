@@ -1,5 +1,6 @@
 package com.zup.mercadolivre.entity.user;
 
+import com.zup.mercadolivre.validation.UniqueValue;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;

@@ -1,6 +1,7 @@
 package com.zup.mercadolivre.entity.user.form;
 
 import com.zup.mercadolivre.entity.user.User;
+import com.zup.mercadolivre.validation.UniqueValue;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -10,6 +11,7 @@ public class CreateUserForm {
 
     @NotBlank(message="{NotBlank}")
     @Email(message="{Email}")
+    @UniqueValue(uniqueField = "login", targetClass = User.class, message = "{UniqueValue}")
     private String login;
 
     @NotBlank(message="{NotBlank}")
