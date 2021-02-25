@@ -15,8 +15,6 @@ public class CategoryResponse {
         if (category.getParentCategory() != null){
             this.parentCategory = new CategoryParentResponse(category.getParentCategory());
         }
-
-
     }
 
     public long getId() {

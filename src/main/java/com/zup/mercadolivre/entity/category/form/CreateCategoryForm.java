@@ -17,6 +17,14 @@ public class CreateCategoryForm {
     @ValidCategoryId
     private String categoryId;
 
+    @Deprecated
+    public CreateCategoryForm() {}
+
+    public CreateCategoryForm(String name, String categoryId){
+        this.name = name;
+        this.categoryId = categoryId;
+    };
+
     public String getName() {
         return name;
     }
@@ -30,7 +38,7 @@ public class CreateCategoryForm {
             return new Category(name, null);
         }
 
-        Category category = entityManager.find(Category.class, categoryId);
+        Category category = entityManager.find(Category.class, Long.parseLong(categoryId));
         Assert.notNull(category, "Invalid parent category id");
         return new Category(name, category);
     }

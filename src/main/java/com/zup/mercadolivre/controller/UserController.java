@@ -16,7 +16,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/user")
-public class UserController {
+public class UserController{
 
     @PersistenceContext
     EntityManager entityManager;
