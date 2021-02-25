@@ -18,6 +18,9 @@ public class ProductResponse {
     private CategoryResponse category;
     private LocalDateTime registerTime;
 
+    @Deprecated
+    public ProductResponse(){}
+
     public ProductResponse(Product product) {
         this.id = product.getId();
         this.name = product.getName();

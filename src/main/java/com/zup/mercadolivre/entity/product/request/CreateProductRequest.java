@@ -39,6 +39,26 @@ public class CreateProductRequest {
     @ValidId(targetClass = Category.class)
     private String categoryId;
 
+    @Deprecated
+    public CreateProductRequest() {
+    }
+
+    public CreateProductRequest(
+            String name,
+            BigDecimal price,
+            int inventory,
+            List<CreateProductCharacteristicsRequest> productCharacteristics,
+            String description,
+            String categoryId
+    ) {
+        this.name = name;
+        this.price = price;
+        this.inventory = inventory;
+        this.productCharacteristics = productCharacteristics;
+        this.description = description;
+        this.categoryId = categoryId;
+    }
+
     public String getName() {
         return name;
     }
