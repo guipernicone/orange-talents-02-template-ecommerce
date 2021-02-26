@@ -2,6 +2,7 @@ package com.zup.mercadolivre.entity.product;
 
 import com.zup.mercadolivre.entity.category.Category;
 import com.zup.mercadolivre.entity.user.User;
+import com.zup.mercadolivre.exceptions.UnauthorizedRequest;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -49,6 +51,9 @@ public class Product {
     @ManyToOne
     private User owner;
 
+    @OneToMany(cascade=CascadeType.MERGE, mappedBy = "product")
+    private List<ProductImages> images;
+
     private LocalDateTime registerTime;
 
     @Deprecated
@@ -80,6 +85,7 @@ public class Product {
         this.category = category;
         this.owner = user;
         this.registerTime = LocalDateTime.now();
+        this.images = new ArrayList<>();
     }
 
     public long getId() {
@@ -114,7 +120,19 @@ public class Product {
         return owner;
     }
 
+    public List<ProductImages> getImages() {
+        return images;
+    }
+
     public LocalDateTime getRegisterTime() {
         return registerTime;
+    }
+
+    public void addImage(List<ProductImages> imagesList, String requestedLogin) throws UnauthorizedRequest {
+        if (!this.owner.getLogin().equals(requestedLogin)){
+            throw new UnauthorizedRequest("User not authorized to this operation");
+        }
+
+        this.images.addAll(imagesList);
     }
 }
