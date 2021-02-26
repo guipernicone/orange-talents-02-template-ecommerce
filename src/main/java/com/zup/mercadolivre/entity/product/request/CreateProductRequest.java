@@ -3,16 +3,19 @@ package com.zup.mercadolivre.entity.product.request;
 import com.zup.mercadolivre.entity.category.Category;
 import com.zup.mercadolivre.entity.product.Product;
 import com.zup.mercadolivre.entity.product.ProductCharacteristics;
+import com.zup.mercadolivre.entity.user.User;
 import com.zup.mercadolivre.validation.ValidId;
 import io.jsonwebtoken.lang.Assert;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class CreateProductRequest {
@@ -83,11 +86,16 @@ public class CreateProductRequest {
         return categoryId;
     }
 
-    public Product toModel(EntityManager entityManager){
+    public Product toModel(EntityManager entityManager, String userLogin){
 
         Category category = entityManager.find(Category.class, Long.parseLong(this.categoryId));
 
+        Query query = entityManager.createQuery("select u from " + User.class.getName() + " u where login =:login");
+        query.setParameter("login", userLogin);
+        User user = (User) query.getSingleResult();
+
         Assert.notNull(category, "The category with id (" +this.categoryId+") was not found");
+        Assert.notNull(user, "Invalid user id");
 
         List<ProductCharacteristics> productCharacteristicsList =
                 productCharacteristics
@@ -101,7 +109,8 @@ public class CreateProductRequest {
                 this.inventory,
                 productCharacteristicsList,
                 this.description,
-                category
+                category,
+                user
         );
     }
 }

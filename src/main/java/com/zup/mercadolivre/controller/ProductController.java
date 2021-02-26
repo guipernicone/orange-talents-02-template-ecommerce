@@ -7,6 +7,7 @@ import com.zup.mercadolivre.repository.ProductRepository;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,8 +30,8 @@ public class ProductController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<ProductResponse> createProduct(@RequestBody @Valid CreateProductRequest productRequest){
-        Product product = productRequest.toModel(entityManager);
+    public ResponseEntity<ProductResponse> createProduct(@RequestBody @Valid CreateProductRequest productRequest, Authentication authentication){
+        Product product = productRequest.toModel(entityManager, authentication.getName());
         entityManager.persist(product);
 
         return ResponseEntity.ok(new ProductResponse(product));

@@ -7,6 +7,7 @@ import com.zup.mercadolivre.entity.category.Category;
 import com.zup.mercadolivre.entity.product.Product;
 import com.zup.mercadolivre.entity.product.request.CreateProductCharacteristicsRequest;
 import com.zup.mercadolivre.entity.product.request.CreateProductRequest;
+import com.zup.mercadolivre.entity.user.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,11 +42,14 @@ public class ProductControllerTest {
     private EntityManager entityManager;
 
     @Transactional
-    @WithMockUser
+    @WithMockUser(username = "test@zup.com.br", password = "123456")
     @Test
     public void testCreateProductOkResponse() throws Exception {
         Category category = new Category("CategoryTest", null);
         entityManager.persist(category);
+
+        User user = new User("test@zup.com.br", "123456");
+        entityManager.persist(user);
 
         CreateProductRequest productRequest = new CreateProductRequest(
                 "testName",
@@ -73,6 +77,8 @@ public class ProductControllerTest {
         JsonNode productResponse = new ObjectMapper().readTree(content);
         Product createdProduct = entityManager.find(Product.class, Long.parseLong(String.valueOf(productResponse.get("id"))));
         Assertions.assertNotNull(createdProduct);
+        Assertions.assertNotNull(createdProduct.getOwner());
+        Assertions.assertEquals("test@zup.com.br",createdProduct.getOwner().getLogin());
 
     }
 

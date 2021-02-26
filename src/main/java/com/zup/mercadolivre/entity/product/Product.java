@@ -1,6 +1,7 @@
 package com.zup.mercadolivre.entity.product;
 
 import com.zup.mercadolivre.entity.category.Category;
+import com.zup.mercadolivre.entity.user.User;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
@@ -44,6 +45,10 @@ public class Product {
     @ManyToOne
     private Category category;
 
+    @NotNull
+    @ManyToOne
+    private User owner;
+
     private LocalDateTime registerTime;
 
     @Deprecated
@@ -56,7 +61,8 @@ public class Product {
             int inventory,
             List<ProductCharacteristics> productCharacteristics,
             String description,
-            Category category
+            Category category,
+            User user
     ) {
         Assert.hasLength(name, "The product name must not be empty");
         Assert.hasLength(description, "The product description must not be empty");
@@ -64,6 +70,7 @@ public class Product {
         Assert.notNull(category, "The product must have a category");
         Assert.isTrue(inventory >= 0, "The product inventory must be at least 0");
         Assert.isTrue(price.floatValue() > 0, "The product price must be more than 0");
+        Assert.notNull(user, "The product must have a user");
 
         this.name = name;
         this.price = price;
@@ -71,6 +78,7 @@ public class Product {
         this.productCharacteristics = productCharacteristics;
         this.description = description;
         this.category = category;
+        this.owner = user;
         this.registerTime = LocalDateTime.now();
     }
 
@@ -100,6 +108,10 @@ public class Product {
 
     public Category getCategory() {
         return category;
+    }
+
+    public User getOwner() {
+        return owner;
     }
 
     public LocalDateTime getRegisterTime() {
