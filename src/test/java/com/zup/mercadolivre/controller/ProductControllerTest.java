@@ -5,14 +5,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.zup.mercadolivre.entity.category.Category;
 import com.zup.mercadolivre.entity.product.Product;
+import com.zup.mercadolivre.entity.product.ProductCharacteristics;
 import com.zup.mercadolivre.entity.product.request.CreateProductCharacteristicsRequest;
 import com.zup.mercadolivre.entity.product.request.CreateProductRequest;
+import com.zup.mercadolivre.entity.product.request.ImageProductRequest;
 import com.zup.mercadolivre.entity.user.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -21,11 +25,10 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.stream.Stream;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -104,4 +107,124 @@ public class ProductControllerTest {
                 .andExpect(status().isBadRequest())
                 .andReturn();
     }
+
+    @Transactional
+    @WithMockUser(username = "test@zup.com.br", password = "123456")
+    @Test
+    public void testAddProductsImages() throws Exception {
+        Category category = new Category("CategoryTest", null);
+        entityManager.persist(category);
+
+        User user = new User("test@zup.com.br", "123456");
+        entityManager.persist(user);
+
+        Product product = new Product(
+                "productTest",
+                new BigDecimal(1),
+                1,
+                Arrays.asList(
+                        new ProductCharacteristics("detailName", "value"),
+                        new ProductCharacteristics("detailName", "value"),
+                        new ProductCharacteristics("detailName", "value")
+                ),
+                "description",
+                category,
+                user
+        );
+
+        entityManager.persist(product);
+
+        List<String> links =  Arrays.asList("www.test1.com", "www.test2.com");
+        ImageProductRequest imageRequest = new ImageProductRequest(links);
+
+        this.mockMvc
+                .perform(
+                        post("/product/{product_id}/images", product.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(new Gson().toJson(imageRequest))
+                )
+                .andExpect(status().isOk());
+
+        Product updatedProduct = entityManager.find(Product.class, product.getId());
+        Assertions.assertNotNull(updatedProduct);
+        Assertions.assertNotNull(updatedProduct.getImages());
+        updatedProduct.getImages().forEach(image -> Assertions.assertTrue(links.contains(image.getLink())));
+    }
+
+    @Transactional
+    @WithMockUser(username = "test@zup.com.br", password = "123456")
+    @Test
+    public void testAddProductsImagesWithInvalidUserid() throws Exception {
+        Category category = new Category("CategoryTest", null);
+        entityManager.persist(category);
+
+        User user = new User("tes@zup.com.br", "123456");
+        entityManager.persist(user);
+
+        Product product = new Product(
+                "productTest",
+                new BigDecimal(1),
+                1,
+                Arrays.asList(
+                        new ProductCharacteristics("detailName", "value"),
+                        new ProductCharacteristics("detailName", "value"),
+                        new ProductCharacteristics("detailName", "value")
+                ),
+                "description",
+                category,
+                user
+        );
+
+        entityManager.persist(product);
+
+        List<String> links =  Arrays.asList("www.test1.com", "www.test2.com");
+        ImageProductRequest imageRequest = new ImageProductRequest(links);
+
+        this.mockMvc
+                .perform(
+                        post("/product/{product_id}/images", product.getId())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(new Gson().toJson(imageRequest))
+                )
+                .andExpect(status().is(403));
+    }
+
+    @Transactional
+    @WithMockUser(username = "test@zup.com.br", password = "123456")
+    @Test
+    public void testAddProductsImagesWithInvalidProductId() throws Exception {
+        Category category = new Category("CategoryTest", null);
+        entityManager.persist(category);
+
+        User user = new User("test@zup.com.br", "123456");
+        entityManager.persist(user);
+
+        Product product = new Product(
+                "productTest",
+                new BigDecimal(1),
+                1,
+                Arrays.asList(
+                        new ProductCharacteristics("detailName", "value"),
+                        new ProductCharacteristics("detailName", "value"),
+                        new ProductCharacteristics("detailName", "value")
+                ),
+                "description",
+                category,
+                user
+        );
+
+        entityManager.persist(product);
+
+        List<String> links =  Arrays.asList("www.test1.com", "www.test2.com");
+        ImageProductRequest imageRequest = new ImageProductRequest(links);
+
+        this.mockMvc
+                .perform(
+                        post("/product/{product_id}/images", "999")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(new Gson().toJson(imageRequest))
+                )
+                .andExpect(status().isBadRequest());
+    }
+
 }

@@ -11,6 +11,13 @@ public class ImageProductRequest {
     @NotNull
     private List<String> imageLinks;
 
+    @Deprecated
+    public ImageProductRequest() {}
+
+    public ImageProductRequest(List<String> imageLinks) {
+        this.imageLinks = imageLinks;
+    }
+
     public List<String> getImageLinks() {
         return imageLinks;
     }

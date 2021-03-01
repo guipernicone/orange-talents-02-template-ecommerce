@@ -8,14 +8,12 @@ import com.zup.mercadolivre.entity.product.response.ProductImageResponse;
 import com.zup.mercadolivre.entity.product.response.ProductResponse;
 import com.zup.mercadolivre.exceptions.UnauthorizedRequest;
 import com.zup.mercadolivre.repository.ProductRepository;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.Valid;
@@ -68,7 +66,7 @@ public class ProductController {
         List<ProductImages> productImages = imageRequest.toModel(product);
 
         product.addImage(productImages, authentication.getName());
-        productRepository.save(product);
+        entityManager.persist(product);
 
         return ResponseEntity.ok(new ProductImageResponse(product));
     }
