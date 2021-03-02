@@ -1,18 +1,18 @@
-package com.zup.mercadolivre.entity.Email;
+package com.zup.mercadolivre.entity.email;
 
 import com.zup.mercadolivre.entity.product.Product;
 import com.zup.mercadolivre.entity.question.Question;
 import com.zup.mercadolivre.entity.user.User;
 import io.jsonwebtoken.lang.Assert;
 
-public class EmailManager {
+public class EmailQuestion {
 
     private User fromUser;
     private User toUser;
     private Product product;
     private Question question;
 
-    public EmailManager(Question question){
+    public EmailQuestion(Question question){
         Assert.notNull(question, "The question must not be null");
         Assert.notNull(question.getUser(), "The Question User cannot be null");
         Assert.notNull(question.getProduct(), "The Question product cannot be null");

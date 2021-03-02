@@ -1,12 +1,11 @@
 package com.zup.mercadolivre.controller;
 
-import com.zup.mercadolivre.entity.Email.EmailManager;
+import com.zup.mercadolivre.entity.email.EmailQuestion;
 import com.zup.mercadolivre.entity.question.Question;
 import com.zup.mercadolivre.entity.question.request.CreateQuestionRequest;
 import com.zup.mercadolivre.entity.question.response.QuestionResponse;
 import com.zup.mercadolivre.entity.user.User;
 import com.zup.mercadolivre.repository.UserRepository;
-import com.zup.mercadolivre.validation.ValidId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.Valid;
@@ -48,8 +46,8 @@ public class QuestionController {
         Question question = questionRequest.toModel(entityManager, userOptional.get());
         entityManager.persist(question);
 
-        EmailManager emailManager = new EmailManager(question);
-        emailManager.sendEmail();
+        EmailQuestion emailQuestion = new EmailQuestion(question);
+        emailQuestion.sendEmail();
         return ResponseEntity.ok(new QuestionResponse(question));
     }
 }
