@@ -1,6 +1,8 @@
 package com.zup.mercadolivre.entity.product;
 
 import com.zup.mercadolivre.entity.category.Category;
+import com.zup.mercadolivre.entity.opinion.Opinion;
+import com.zup.mercadolivre.entity.question.Question;
 import com.zup.mercadolivre.entity.user.User;
 import com.zup.mercadolivre.exceptions.UnauthorizedRequest;
 import org.springframework.util.Assert;
@@ -53,6 +55,12 @@ public class Product {
 
     @OneToMany(cascade=CascadeType.MERGE, mappedBy = "product")
     private List<ProductImages> images;
+
+    @OneToMany(cascade=CascadeType.MERGE, mappedBy = "product")
+    private List<Opinion> opinions;
+
+    @OneToMany(cascade=CascadeType.MERGE, mappedBy = "product")
+    private List<Question> questions;
 
     private LocalDateTime registerTime;
 
@@ -126,6 +134,14 @@ public class Product {
 
     public LocalDateTime getRegisterTime() {
         return registerTime;
+    }
+
+    public List<Opinion> getOpinions() {
+        return opinions;
+    }
+
+    public List<Question> getQuestions() {
+        return questions;
     }
 
     public void addImage(List<ProductImages> imagesList, String requestedLogin) throws UnauthorizedRequest {

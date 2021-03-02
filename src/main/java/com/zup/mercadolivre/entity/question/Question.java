@@ -29,6 +29,9 @@ public class Question {
     @NotNull(message = "{NotNull}")
     private LocalDateTime publishDate;
 
+    @Deprecated
+    public Question(){}
+
     public Question(String title, String question, User user, Product product) {
         Assert.hasLength(title, "The title must not be empty");
         Assert.hasLength(question, "The question must not be empty");

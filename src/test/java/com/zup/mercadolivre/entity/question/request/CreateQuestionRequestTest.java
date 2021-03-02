@@ -1,8 +1,6 @@
 package com.zup.mercadolivre.entity.question.request;
 
 import com.zup.mercadolivre.entity.category.Category;
-import com.zup.mercadolivre.entity.opinion.Opinion;
-import com.zup.mercadolivre.entity.opinion.request.OpinionRequest;
 import com.zup.mercadolivre.entity.product.Product;
 import com.zup.mercadolivre.entity.product.ProductCharacteristics;
 import com.zup.mercadolivre.entity.question.Question;

@@ -4,6 +4,7 @@ import com.zup.mercadolivre.entity.product.Product;
 import com.zup.mercadolivre.entity.product.ProductImages;
 import com.zup.mercadolivre.entity.product.request.CreateProductRequest;
 import com.zup.mercadolivre.entity.product.request.ImageProductRequest;
+import com.zup.mercadolivre.entity.product.response.ProductDetailsResponse;
 import com.zup.mercadolivre.entity.product.response.ProductImageResponse;
 import com.zup.mercadolivre.entity.product.response.ProductResponse;
 import com.zup.mercadolivre.exceptions.UnauthorizedRequest;
@@ -47,6 +48,18 @@ public class ProductController {
         List<ProductResponse> productResponseList = productList.stream().map(ProductResponse::new).collect(Collectors.toList());
 
         return ResponseEntity.ok(productResponseList);
+    }
+
+    @GetMapping("/{product_id}")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getProduct(@PathVariable("product_id") long productId){
+        Optional<Product> productOptional = productRepository.findById(productId);
+
+        if (productOptional.isEmpty()){
+            return ResponseEntity.badRequest().body("Invalid Product Id");
+        }
+
+        return ResponseEntity.ok(new ProductDetailsResponse(productOptional.get()));
     }
 
     @PostMapping("/{product_id}/images")

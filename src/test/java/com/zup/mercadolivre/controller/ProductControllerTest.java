@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -227,4 +228,51 @@ public class ProductControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Transactional
+    @WithMockUser
+    @Test
+    public void testGetProduct() throws Exception {
+        Category category = new Category("CategoryTest", null);
+        entityManager.persist(category);
+
+        User user = new User("test@zup.com.br", "123456");
+        entityManager.persist(user);
+
+        Product product = new Product(
+                "productTest",
+                new BigDecimal(1),
+                1,
+                Arrays.asList(
+                        new ProductCharacteristics("detailName", "value"),
+                        new ProductCharacteristics("detailName", "value"),
+                        new ProductCharacteristics("detailName", "value")
+                ),
+                "description",
+                category,
+                user
+        );
+
+        entityManager.persist(product);
+
+        List<String> links =  Arrays.asList("www.test1.com", "www.test2.com");
+        ImageProductRequest imageRequest = new ImageProductRequest(links);
+
+        this.mockMvc
+                .perform(
+                        get("/product/{product_id}", product.getId())
+                )
+                .andExpect(status().isOk())
+                .andReturn();
+    }
+
+    @Transactional
+    @WithMockUser
+    @Test
+    public void testGetProductWithInvalidProductId() throws Exception {
+        this.mockMvc
+                .perform(
+                        get("/product/{product_id}", "999")
+                )
+                .andExpect(status().isBadRequest());
+    }
 }
