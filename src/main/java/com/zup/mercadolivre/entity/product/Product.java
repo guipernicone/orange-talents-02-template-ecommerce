@@ -151,4 +151,12 @@ public class Product {
 
         this.images.addAll(imagesList);
     }
+
+    public boolean updateInventory(int quantity) {
+        if (quantity > 0 && quantity >= this.inventory) {
+            this.inventory -= quantity;
+            return true;
+        }
+        return false;
+    }
 }
