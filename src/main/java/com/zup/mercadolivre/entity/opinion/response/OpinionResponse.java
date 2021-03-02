@@ -18,6 +18,7 @@ public class OpinionResponse
     private ProductResponse product;
 
     public OpinionResponse(Opinion opinion) {
+        this.id = opinion.getId();
         this.title = opinion.getTitle();
         this.rating = opinion.getRating();
         this.description = opinion.getDescription();

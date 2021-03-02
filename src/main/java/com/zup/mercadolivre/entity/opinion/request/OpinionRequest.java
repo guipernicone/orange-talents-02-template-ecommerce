@@ -3,6 +3,7 @@ package com.zup.mercadolivre.entity.opinion.request;
 import com.zup.mercadolivre.entity.opinion.Opinion;
 import com.zup.mercadolivre.entity.product.Product;
 import com.zup.mercadolivre.entity.user.User;
+import com.zup.mercadolivre.validation.ValidId;
 import io.jsonwebtoken.lang.Assert;
 
 import javax.persistence.EntityManager;
@@ -19,6 +20,7 @@ public class OpinionRequest {
     @Size(max = 500, message = "{Size.description}")
     private String description;
     @NotNull(message = "{NotNull}")
+    @ValidId(targetClass = Product.class)
     private long productId;
 
     @Deprecated
