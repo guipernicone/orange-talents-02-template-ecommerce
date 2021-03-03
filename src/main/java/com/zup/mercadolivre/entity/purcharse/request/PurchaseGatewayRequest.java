@@ -21,7 +21,14 @@ public class PurchaseGatewayRequest {
     private long purchaseId;
 
     private GatewayStatusEnum status;
+    @Deprecated
+    public PurchaseGatewayRequest() {}
 
+    public PurchaseGatewayRequest(long gatewayId, long purchaseId, GatewayStatusEnum status) {
+        this.gatewayId = gatewayId;
+        this.purchaseId = purchaseId;
+        this.status = status;
+    }
 
     public long getGatewayId() {
         return gatewayId;
