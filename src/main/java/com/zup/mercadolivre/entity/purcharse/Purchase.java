@@ -28,6 +28,9 @@ public class Purchase {
     @ManyToOne
     private Product product;
 
+    @Deprecated
+    public Purchase(){}
+
     public Purchase(int quantity, GatewayEnum gateway, PurchaseStatusEnum status, User user, Product product) {
         Assert.isTrue(quantity >= 1 , "The quantity must be higher than 1");
         Assert.notNull(gateway, "Invalid gateway");
@@ -73,5 +76,13 @@ public class Purchase {
        else{
            return "pagseguro.com?returnId="+ this.id +"&redirectUrl=urlRetornoAppPosPagamento";
         }
+    }
+
+    public void updateStatus(PurchaseStatusEnum status) {
+        Assert.isTrue(
+                this.status != PurchaseStatusEnum.FINISHED.getValue(),
+                "This purchase is already finished and cannot be altered"
+        );
+        this.status = status.getValue();
     }
 }

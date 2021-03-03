@@ -42,6 +42,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST,"/user").permitAll()
                 .antMatchers("/auth").permitAll()
+                .antMatchers("/nota-fiscal").permitAll()
+                .antMatchers("/seller").permitAll()
                 .anyRequest().authenticated()
 
                 .and()

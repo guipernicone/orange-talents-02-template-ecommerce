@@ -153,7 +153,7 @@ public class Product {
     }
 
     public boolean updateInventory(int quantity) {
-        if (quantity > 0 && quantity >= this.inventory) {
+        if (quantity > 0 && quantity <= this.inventory) {
             this.inventory -= quantity;
             return true;
         }
