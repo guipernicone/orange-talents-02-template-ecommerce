@@ -1,7 +1,5 @@
 package com.zup.mercadolivre.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.zup.mercadolivre.entity.category.Category;
 import com.zup.mercadolivre.entity.product.Product;
@@ -12,10 +10,8 @@ import com.zup.mercadolivre.entity.purcharse.Enum.PurchaseStatusEnum;
 import com.zup.mercadolivre.entity.purcharse.Purchase;
 import com.zup.mercadolivre.entity.purcharse.request.PurchaseGatewayRequest;
 import com.zup.mercadolivre.entity.purcharse.request.PurchaseRequest;
-import com.zup.mercadolivre.entity.question.Question;
 import com.zup.mercadolivre.entity.user.User;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +33,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 public class PurchaseControllerTest {
@@ -75,7 +71,7 @@ public class PurchaseControllerTest {
         );
         entityManager.persist(productTest);
 
-        Purchase purchaseTest = new Purchase(
+        purchaseTest = new Purchase(
                 1,
                 GatewayEnum.PAYPAL,
                 PurchaseStatusEnum.INITIATE,
@@ -126,13 +122,29 @@ public class PurchaseControllerTest {
     @Transactional
     public void testGatewayReturnErrorStatus() throws Exception {
         PurchaseGatewayRequest purchaseGatewayRequest = new PurchaseGatewayRequest(
-                purchaseTest.getId(),
                 1,
+                purchaseTest.getId(),
                 GatewayStatusEnum.ERRO
         );
         this.mockMvc
                 .perform(post("/purchase/gateway").contentType(MediaType.APPLICATION_JSON).content(new Gson().toJson(purchaseGatewayRequest)))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isOk())
+                .andExpect(content().string(String.valueOf(PurchaseStatusEnum.INITIATE.getValue())));
+    }
+
+    @Test
+    @WithMockUser
+    @Transactional
+    public void testGatewayReturnSucessoStatus() throws Exception {
+        PurchaseGatewayRequest purchaseGatewayRequest = new PurchaseGatewayRequest(
+                1,
+                purchaseTest.getId(),
+                GatewayStatusEnum.SUCESSO
+        );
+        this.mockMvc
+                .perform(post("/purchase/gateway").contentType(MediaType.APPLICATION_JSON).content(new Gson().toJson(purchaseGatewayRequest)))
+                .andExpect(status().isOk())
+                .andExpect(content().string(String.valueOf(PurchaseStatusEnum.FINISHED.getValue())));
     }
 
 }

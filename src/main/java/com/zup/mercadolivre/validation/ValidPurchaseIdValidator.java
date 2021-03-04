@@ -16,6 +16,8 @@ public class ValidPurchaseIdValidator implements ConstraintValidator<ValidPurcha
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext constraintValidatorContext) {
         Purchase purchase = entityManager.find(Purchase.class, Long.parseLong(String.valueOf(value)));
+        System.out.println(purchase);
+        if(purchase != null) System.out.println(purchase.getStatus());
         return purchase != null && purchase.getStatus() != PurchaseStatusEnum.FINISHED.getValue();
     }
 }

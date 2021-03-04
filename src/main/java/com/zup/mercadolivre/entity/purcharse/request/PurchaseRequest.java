@@ -44,7 +44,7 @@ public class PurchaseRequest {
         Product product = entityManager.find(Product.class, this.productId);
 
         Assert.notNull(product, "The product must not be null");
-        Assert.notNull(user, "The product must not be null");
+        Assert.notNull(user, "The user must not be null");
         PurchaseStatusEnum status = PurchaseStatusEnum.NOT_INITIATE;
 
         if(product.updateInventory(this.quantity)){
